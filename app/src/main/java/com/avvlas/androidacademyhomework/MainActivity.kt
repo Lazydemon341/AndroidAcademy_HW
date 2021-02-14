@@ -3,6 +3,7 @@ package com.avvlas.androidacademyhomework
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.avvlas.androidacademyhomework.model.Movie
 import com.avvlas.androidacademyhomework.moviedetails.FragmentMovieDetails
 import com.avvlas.androidacademyhomework.movieslist.FragmentMoviesList
 
@@ -34,13 +35,13 @@ class MainActivity : AppCompatActivity(),
             .commit()
     }
 
-    override fun onSelected() {
-        toMovieDetails()
+    override fun onSelected(movie : Movie) {
+        toMovieDetails(movie)
     }
 
-    private fun toMovieDetails() {
+    private fun toMovieDetails(movie : Movie) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container_main, FragmentMovieDetails.create())
+            .replace(R.id.container_main, FragmentMovieDetails.create(movie))
             .addToBackStack("Show Movie Details")
             .commit()
     }

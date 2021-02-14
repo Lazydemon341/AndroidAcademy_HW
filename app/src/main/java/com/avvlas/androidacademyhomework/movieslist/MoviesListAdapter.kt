@@ -66,7 +66,7 @@ class MoviesListAdapter(private val onCardClickListener: (Item: Movie) -> Unit) 
 
             //set stars tint
             stars.forEachIndexed { index, imageView ->
-                val colorId = if (movie.rating > index) R.color.red else R.color.dark_grey
+                val colorId = if (movie.rating > index) R.color.red else R.color.gray_dark
                 ImageViewCompat.setImageTintList(
                     imageView, ColorStateList.valueOf(
                         ContextCompat.getColor(imageView.context, colorId)
@@ -78,7 +78,7 @@ class MoviesListAdapter(private val onCardClickListener: (Item: Movie) -> Unit) 
         }
     }
 
-    class DiffCallback() : DiffUtil.ItemCallback<Movie>() {
+    class DiffCallback : DiffUtil.ItemCallback<Movie>() {
         override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return oldItem.id == newItem.id
         }

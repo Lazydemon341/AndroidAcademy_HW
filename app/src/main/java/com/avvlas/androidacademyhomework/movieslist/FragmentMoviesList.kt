@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.avvlas.androidacademyhomework.R
 import com.avvlas.androidacademyhomework.model.DataGenerator
+import com.avvlas.androidacademyhomework.model.Movie
 
 class FragmentMoviesList : Fragment() {
 
@@ -37,8 +38,8 @@ class FragmentMoviesList : Fragment() {
         view.findViewById<RecyclerView>(R.id.rv_movies_list).apply {
             this.layoutManager = GridLayoutManager(this.context, 2)
 
-            val adapter  = MoviesListAdapter {
-                listener?.onSelected()
+            val adapter  = MoviesListAdapter { movie->
+                listener?.onSelected(movie)
             }
             adapter.submitList(DataGenerator.generateMovieList())
             this.adapter = adapter
@@ -52,7 +53,7 @@ class FragmentMoviesList : Fragment() {
     }
 
     interface OnMovieSelectedListener {
-        fun onSelected()
+        fun onSelected(movie : Movie)
     }
 
     companion object {
