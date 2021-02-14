@@ -1,1 +1,2 @@
-Android Academy fundamentals homework
+Android Academy fundamentals homework - a Movie app
+
