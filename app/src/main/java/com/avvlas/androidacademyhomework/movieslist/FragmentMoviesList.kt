@@ -1,11 +1,15 @@
-package com.avvlas.androidacademyhomework
+package com.avvlas.androidacademyhomework.movieslist
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.avvlas.androidacademyhomework.R
+import com.avvlas.androidacademyhomework.model.DataGenerator
 
 class FragmentMoviesList : Fragment() {
 
@@ -27,11 +31,17 @@ class FragmentMoviesList : Fragment() {
         return inflater.inflate(R.layout.fragment_movies_list, container, false)
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        view?.findViewById<View>(R.id.movie_list_item_card_layout)?.setOnClickListener {
-            listener?.onSelected()
+        view.findViewById<RecyclerView>(R.id.rv_movies_list).apply {
+            this.layoutManager = GridLayoutManager(this.context, 2)
+
+            val adapter  = MoviesListAdapter {
+                listener?.onSelected()
+            }
+            adapter.submitList(DataGenerator.generateMovieList())
+            this.adapter = adapter
         }
     }
 
