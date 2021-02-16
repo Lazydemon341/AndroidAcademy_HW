@@ -50,8 +50,7 @@ class MoviesListAdapter(private val onCardClickListener: (Item: Movie) -> Unit) 
         fun bind(movie: Movie, onCardClick: (Item: Movie) -> Unit) {
             Glide.with(itemView.context)
                 .load(movie.imageUrl)
-                .apply(RequestOptions().error(R.drawable.ic_star).placeholder(R.drawable.ic_like))
-                //TODO: fix, or add another placeholder
+                .apply(RequestOptions().error(R.drawable.mask).placeholder(R.drawable.mask))
                 .into(movieImage)
 
             pgText.text = (movie.pgAge.toString() + "+")

@@ -5,4 +5,5 @@
     <string name="cast">Cast</string>
     <string name="movies_list_allowed_age_template">%d+</string>
     <string name="movies_list_reviews_template">%d REVIEWS</string>
+    <string name="movies_list_fragment_title">Movies list</string>
 </resources>
