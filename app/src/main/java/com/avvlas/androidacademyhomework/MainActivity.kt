@@ -1,15 +1,21 @@
 package com.avvlas.androidacademyhomework
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.android.academy.fundamentals.homework.data.JsonMovieRepository
+import com.android.academy.fundamentals.homework.data.MovieRepository
+import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
 import com.avvlas.androidacademyhomework.model.Movie
 import com.avvlas.androidacademyhomework.moviedetails.FragmentMovieDetails
 import com.avvlas.androidacademyhomework.movieslist.FragmentMoviesList
 
 class MainActivity : AppCompatActivity(),
     FragmentMovieDetails.OnBackClickListener,
-    FragmentMoviesList.OnMovieSelectedListener {
+    FragmentMoviesList.OnMovieSelectedListener,
+    MovieRepositoryProvider {
+
+    private val jsonMovieRepository = JsonMovieRepository(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +41,13 @@ class MainActivity : AppCompatActivity(),
             .commit()
     }
 
-    override fun onSelected(movie : Movie) {
+    override fun onSelected(movie: Movie) {
         toMovieDetails(movie)
     }
 
-    private fun toMovieDetails(movie : Movie) {
+    private fun toMovieDetails(movie: Movie) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container_main, FragmentMovieDetails.create(movie))
+            .add(R.id.container_main, FragmentMovieDetails.create(movie))
             .addToBackStack("Show Movie Details")
             .commit()
     }
@@ -49,4 +55,6 @@ class MainActivity : AppCompatActivity(),
     override fun onBackClick() {
         supportFragmentManager.popBackStack()
     }
+
+    override fun provideMovieRepository(): MovieRepository = jsonMovieRepository
 }

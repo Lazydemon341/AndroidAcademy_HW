@@ -20,6 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         app:srcCompat="@drawable/img_movies_item_header_avengers" />
 
     <View

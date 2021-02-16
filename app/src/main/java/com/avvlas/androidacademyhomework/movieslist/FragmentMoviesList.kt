@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.avvlas.androidacademyhomework.R
-import com.avvlas.androidacademyhomework.model.DataGenerator
+import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
 import com.avvlas.androidacademyhomework.model.Movie
+import kotlinx.coroutines.launch
 
 class FragmentMoviesList : Fragment() {
 
@@ -38,11 +40,20 @@ class FragmentMoviesList : Fragment() {
         view.findViewById<RecyclerView>(R.id.rv_movies_list).apply {
             this.layoutManager = GridLayoutManager(this.context, 2)
 
-            val adapter  = MoviesListAdapter { movie->
+            val adapter = MoviesListAdapter { movie ->
                 listener?.onSelected(movie)
             }
-            adapter.submitList(DataGenerator.generateMovieList())
             this.adapter = adapter
+            loadDataToAdapter(adapter)
+        }
+    }
+
+    private fun loadDataToAdapter(adapter : MoviesListAdapter) {
+        val repository =
+            (requireActivity() as MovieRepositoryProvider).provideMovieRepository()
+        lifecycleScope.launch {
+            val movies = repository.loadMovies()
+            adapter.submitList(movies)
         }
     }
 
@@ -53,7 +64,7 @@ class FragmentMoviesList : Fragment() {
     }
 
     interface OnMovieSelectedListener {
-        fun onSelected(movie : Movie)
+        fun onSelected(movie: Movie)
     }
 
     companion object {

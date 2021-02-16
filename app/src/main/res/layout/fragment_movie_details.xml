@@ -16,11 +16,12 @@
             android:id="@+id/movie_logo_image"
             android:layout_width="0dp"
             android:layout_height="250dp"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/movie_logo"
             android:scaleType="centerCrop"
             android:src="@drawable/img_movie_details_header"
-            app:layout_constraintEnd_toStartOf="@id/right_guideline"
-            app:layout_constraintStart_toStartOf="@id/left_guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
@@ -73,12 +74,12 @@
             android:id="@+id/movie_details_title_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="Avengers:\nEnd Game"
             android:textSize="48sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/right_guideline"
             app:layout_constraintStart_toStartOf="@id/left_guideline"
-            app:layout_constraintTop_toBottomOf="@id/movie_logo_image"/>
+            app:layout_constraintTop_toBottomOf="@id/movie_logo_image"
+            tools:text="Avengers:\nEnd Game" />
 
         <TextView
             android:id="@+id/movie_details_genres_text"

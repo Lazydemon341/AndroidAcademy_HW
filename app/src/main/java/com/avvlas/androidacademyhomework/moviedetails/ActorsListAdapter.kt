@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.avvlas.androidacademyhomework.R
 import com.avvlas.androidacademyhomework.model.Actor
+import com.bumptech.glide.Glide
 
 class ActorsListAdapter : ListAdapter<Actor, ActorsListAdapter.ActorViewHolder>(DiffCallback()) {
 
@@ -24,12 +25,12 @@ class ActorsListAdapter : ListAdapter<Actor, ActorsListAdapter.ActorViewHolder>(
     }
 
     class ActorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val name: TextView = itemView.findViewById(R.id.actor_name)
-        val image: ImageView = itemView.findViewById(R.id.actor_image)
+        private val name: TextView = itemView.findViewById(R.id.actor_name)
+        private val image: ImageView = itemView.findViewById(R.id.actor_image)
 
         fun bind(actor: Actor) {
             name.text = actor.name
-            image.setImageResource(actor.imageRes)
+            Glide.with(itemView.context).load(actor.imageUrl).into(image)
         }
     }
 

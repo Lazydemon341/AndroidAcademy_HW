@@ -1,5 +1,6 @@
 package com.avvlas.androidacademyhomework.movieslist
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.avvlas.androidacademyhomework.R
 import com.avvlas.androidacademyhomework.model.Movie
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 
 class MoviesListAdapter(private val onCardClickListener: (Item: Movie) -> Unit) :
     ListAdapter<Movie, MoviesListAdapter.MovieViewHolder>(DiffCallback()) {
@@ -45,9 +48,14 @@ class MoviesListAdapter(private val onCardClickListener: (Item: Movie) -> Unit) 
         private val durationText: TextView = itemView.findViewById(R.id.movie_card_duration)
 
         fun bind(movie: Movie, onCardClick: (Item: Movie) -> Unit) {
-            movieImage.setImageResource(movie.imageRes)
+            Glide.with(itemView.context)
+                .load(movie.imageUrl)
+                .apply(RequestOptions().error(R.drawable.ic_star).placeholder(R.drawable.ic_like))
+                //TODO: fix, or add another placeholder
+                .into(movieImage)
+
             pgText.text = (movie.pgAge.toString() + "+")
-            genreText.text = movie.genre
+            genreText.text = movie.genres.joinToString { it.name }
             reviewsText.text = (movie.reviewCount.toString() + "reviews")
             titleText.text = movie.title
             durationText.text = (movie.duration.toString() + "min")

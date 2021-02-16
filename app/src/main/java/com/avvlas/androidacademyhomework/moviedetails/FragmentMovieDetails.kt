@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.avvlas.androidacademyhomework.R
 import com.avvlas.androidacademyhomework.model.Movie
+import com.bumptech.glide.Glide
 
 class FragmentMovieDetails : Fragment() {
 
@@ -47,22 +48,23 @@ class FragmentMovieDetails : Fragment() {
         initRecyclerView(view, movie)
     }
 
-    private fun initRecyclerView(view: View, movie : Movie) {
+    private fun initRecyclerView(view: View, movie: Movie) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_actors_list)
         val adapter = ActorsListAdapter()
         adapter.submitList(movie.actors)
         recyclerView.adapter = adapter
     }
 
-    private fun initMovieDetails(view : View, movie : Movie){
-        view.findViewById<ImageView>(R.id.movie_logo_image)
-            ?.setImageResource(movie.detailsImageRes)
+    private fun initMovieDetails(view: View, movie: Movie) {
+        Glide.with(view.context).load(movie.detailImageUrl)
+            .into(view.findViewById(R.id.movie_logo_image))
 
         view.findViewById<TextView>(R.id.movie_details_pg_text)?.text =
             context?.getString(R.string.movies_list_allowed_age_template, movie.pgAge)
 
         view.findViewById<TextView>(R.id.movie_details_title_text)?.text = movie.title
-        view.findViewById<TextView>(R.id.movie_details_genres_text)?.text = movie.genre
+        view.findViewById<TextView>(R.id.movie_details_genres_text)?.text =
+            movie.genres.joinToString { it.name }
         view.findViewById<TextView>(R.id.movie_details_reviews_number_text)?.text =
             context?.getString(R.string.movies_list_reviews_template, movie.reviewCount)
         view.findViewById<TextView>(R.id.storyline_text)?.text = movie.storyLine
