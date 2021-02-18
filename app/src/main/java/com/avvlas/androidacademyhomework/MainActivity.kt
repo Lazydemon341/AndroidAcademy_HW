@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.android.academy.fundamentals.homework.data.JsonMovieRepository
 import com.android.academy.fundamentals.homework.data.MovieRepository
-import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
+import com.avvlas.androidacademyhomework.data.MovieRepositoryProvider
 import com.avvlas.androidacademyhomework.model.Movie
 import com.avvlas.androidacademyhomework.moviedetails.FragmentMovieDetails
 import com.avvlas.androidacademyhomework.movieslist.FragmentMoviesList

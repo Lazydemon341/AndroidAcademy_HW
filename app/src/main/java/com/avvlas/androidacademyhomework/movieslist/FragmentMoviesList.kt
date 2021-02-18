@@ -6,17 +6,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.avvlas.androidacademyhomework.R
-import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
+import com.avvlas.androidacademyhomework.data.MovieRepositoryProvider
 import com.avvlas.androidacademyhomework.model.Movie
-import kotlinx.coroutines.launch
 
 class FragmentMoviesList : Fragment() {
 
-    var listener: OnMovieSelectedListener? = null
+    private val viewModel: MoviesListViewModel by viewModels {
+        MoviesListViewModelFactory(
+            (requireActivity() as MovieRepositoryProvider)
+                .provideMovieRepository()
+        )
+    }
+
+    private var listener: OnMovieSelectedListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -48,11 +54,8 @@ class FragmentMoviesList : Fragment() {
         }
     }
 
-    private fun loadDataToAdapter(adapter : MoviesListAdapter) {
-        val repository =
-            (requireActivity() as MovieRepositoryProvider).provideMovieRepository()
-        lifecycleScope.launch {
-            val movies = repository.loadMovies()
+    private fun loadDataToAdapter(adapter: MoviesListAdapter) {
+        viewModel.moviesData.observe(this.viewLifecycleOwner) { movies ->
             adapter.submitList(movies)
         }
     }

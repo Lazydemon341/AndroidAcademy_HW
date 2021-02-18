@@ -1,4 +1,4 @@
-package com.avvlas.androidacademyhomework.di
+package com.avvlas.androidacademyhomework.data
 
 import com.android.academy.fundamentals.homework.data.MovieRepository
 
