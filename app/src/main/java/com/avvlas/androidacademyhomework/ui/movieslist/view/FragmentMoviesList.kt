@@ -1,4 +1,4 @@
-package com.avvlas.androidacademyhomework.movieslist
+package com.avvlas.androidacademyhomework.ui.movieslist.view
 
 import android.content.Context
 import android.os.Bundle
@@ -10,8 +10,10 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.avvlas.androidacademyhomework.R
-import com.avvlas.androidacademyhomework.data.MovieRepositoryProvider
+import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
 import com.avvlas.androidacademyhomework.model.Movie
+import com.avvlas.androidacademyhomework.ui.movieslist.viewmodel.MoviesListViewModel
+import com.avvlas.androidacademyhomework.ui.movieslist.viewmodel.MoviesListViewModelFactory
 
 class FragmentMoviesList : Fragment() {
 

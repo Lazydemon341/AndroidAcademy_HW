@@ -3,19 +3,23 @@ package com.avvlas.androidacademyhomework
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.android.academy.fundamentals.homework.data.JsonMovieRepository
 import com.android.academy.fundamentals.homework.data.MovieRepository
-import com.avvlas.androidacademyhomework.data.MovieRepositoryProvider
+import com.avvlas.androidacademyhomework.data.remote.retrofit.RetrofitStorage
+import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
+import com.avvlas.androidacademyhomework.di.NetworkModule
 import com.avvlas.androidacademyhomework.model.Movie
-import com.avvlas.androidacademyhomework.moviedetails.FragmentMovieDetails
-import com.avvlas.androidacademyhomework.movieslist.FragmentMoviesList
+import com.avvlas.androidacademyhomework.repository.MovieRepositoryImpl
+import com.avvlas.androidacademyhomework.ui.moviedetails.view.FragmentMovieDetails
+import com.avvlas.androidacademyhomework.ui.movieslist.view.FragmentMoviesList
 
 class MainActivity : AppCompatActivity(),
     FragmentMovieDetails.OnBackClickListener,
     FragmentMoviesList.OnMovieSelectedListener,
     MovieRepositoryProvider {
 
-    private val jsonMovieRepository = JsonMovieRepository(this)
+    private val networkModule = NetworkModule()
+    private val remoteDataSource = RetrofitStorage(networkModule.api)
+    private val repository = MovieRepositoryImpl.getInstance(remoteDataSource)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,10 +28,9 @@ class MainActivity : AppCompatActivity(),
         if (savedInstanceState == null)
             toMoviesList()
 
-
         supportFragmentManager.addOnBackStackChangedListener {
             var str: String = "Backstack:\n"
-            for (i in 0..(supportFragmentManager.backStackEntryCount - 1)) {
+            for (i in 0 until supportFragmentManager.backStackEntryCount) {
                 str += supportFragmentManager.getBackStackEntryAt(i).toString() + "\n"
             }
             Log.d("backStack", str)
@@ -56,5 +59,7 @@ class MainActivity : AppCompatActivity(),
         supportFragmentManager.popBackStack()
     }
 
-    override fun provideMovieRepository(): MovieRepository = jsonMovieRepository
+    override fun provideMovieRepository(): MovieRepository {
+        return repository
+    }
 }

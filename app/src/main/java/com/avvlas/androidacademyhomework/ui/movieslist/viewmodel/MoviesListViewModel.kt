@@ -1,4 +1,4 @@
-package com.avvlas.androidacademyhomework.movieslist
+package com.avvlas.androidacademyhomework.ui.movieslist.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,8 +9,9 @@ import com.avvlas.androidacademyhomework.model.Movie
 import kotlinx.coroutines.launch
 
 class MoviesListViewModel(private val repository : MovieRepository) : ViewModel() {
-    private val mMoviesData = MutableLiveData<List<Movie>>()
-    public val moviesData : LiveData<List<Movie>> = mMoviesData
+
+    private val mutableMoviesData = MutableLiveData<List<Movie>>()
+    val moviesData : LiveData<List<Movie>> = mutableMoviesData
 
     init{
         loadMovies()
@@ -18,7 +19,7 @@ class MoviesListViewModel(private val repository : MovieRepository) : ViewModel(
 
     private fun loadMovies(){
         viewModelScope.launch{
-            mMoviesData.postValue(repository.loadMovies())
+            mutableMoviesData.postValue(repository.loadMovies())
         }
     }
 

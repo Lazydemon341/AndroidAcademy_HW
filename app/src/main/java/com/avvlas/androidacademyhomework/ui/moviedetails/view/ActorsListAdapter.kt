@@ -1,4 +1,4 @@
-package com.avvlas.androidacademyhomework.moviedetails
+package com.avvlas.androidacademyhomework.ui.moviedetails.view
 
 import android.view.LayoutInflater
 import android.view.View

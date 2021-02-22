@@ -1,6 +1,5 @@
-package com.avvlas.androidacademyhomework.movieslist
+package com.avvlas.androidacademyhomework.ui.movieslist.view
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View

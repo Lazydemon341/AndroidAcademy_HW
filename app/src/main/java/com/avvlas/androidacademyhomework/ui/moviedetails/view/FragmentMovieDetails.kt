@@ -1,4 +1,4 @@
-package com.avvlas.androidacademyhomework.moviedetails
+package com.avvlas.androidacademyhomework.ui.moviedetails.view
 
 import android.content.Context
 import android.content.res.ColorStateList
