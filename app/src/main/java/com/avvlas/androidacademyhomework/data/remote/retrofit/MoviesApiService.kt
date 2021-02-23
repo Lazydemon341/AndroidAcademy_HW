@@ -1,14 +1,22 @@
 package com.avvlas.androidacademyhomework.data.remote.retrofit
 
-import com.avvlas.androidacademyhomework.data.remote.retrofit.response.ConfigurationResponse
-import com.avvlas.androidacademyhomework.data.remote.retrofit.response.GenreResponse
-import com.avvlas.androidacademyhomework.data.remote.retrofit.response.GenresResponse
+import com.avvlas.androidacademyhomework.data.remote.retrofit.response.*
 import retrofit2.http.GET
+import retrofit2.http.Path
 
-interface MoviesApiService{
+interface MoviesApiService {
     @GET("configuration")
-    suspend fun loadConfiguration() : ConfigurationResponse
+    suspend fun loadConfiguration(): ConfigurationResponse
 
     @GET("genre/movie/list")
-    suspend fun loadGenres() : GenresResponse
+    suspend fun loadGenres(): GenresResponse
+
+    @GET("movie/popular")
+    suspend fun loadPopularMovies(): PopularMoviesResponse
+
+    @GET("movie/{id}")
+    suspend fun loadMovieDetails(@Path("id") id: Int): MovieDetailsResponse
+
+    @GET("movie/{id}/credits")
+    suspend fun loadMovieCredits(@Path("id") id : Int): MovieCreditsResponse
 }

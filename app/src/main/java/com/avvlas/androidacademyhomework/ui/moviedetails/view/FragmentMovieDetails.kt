@@ -8,18 +8,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.avvlas.androidacademyhomework.R
-import com.avvlas.androidacademyhomework.model.Movie
+import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
+import com.avvlas.androidacademyhomework.model.MovieDetails
+import com.avvlas.androidacademyhomework.ui.moviedetails.viewmodel.MovieDetailsViewModel
+import com.avvlas.androidacademyhomework.ui.moviedetails.viewmodel.MovieDetailsViewModelFactory
+import com.avvlas.androidacademyhomework.ui.moviedetails.viewmodel.MovieDetailsViewState
 import com.bumptech.glide.Glide
 
 class FragmentMovieDetails : Fragment() {
 
-    var listener: OnBackClickListener? = null
+    private val viewModel: MovieDetailsViewModel by viewModels {
+        MovieDetailsViewModelFactory(
+            (requireActivity() as MovieRepositoryProvider)
+                .provideMovieRepository()
+        )
+    }
+
+    private var listener: OnBackClickListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,19 +56,30 @@ class FragmentMovieDetails : Fragment() {
             .setOnClickListener {
                 listener?.onBackClick()
             }
-        val movie = arguments?.getSerializable(PARAM_MOVIE_DATA) as Movie
-        initMovieDetails(view, movie)
-        initRecyclerView(view, movie)
+
+        val movieId = arguments?.getInt(PARAM_MOVIE_ID) as? Int ?: return
+        viewModel.loadMovieDetails(movieId)
+        viewModel.state.observe(this.viewLifecycleOwner) { state ->
+            when (state) {
+                is MovieDetailsViewState.MovieLoaded -> initUi(view, state.movie)
+                MovieDetailsViewState.NoMovie -> showMovieLoadError()
+            }
+        }
     }
 
-    private fun initRecyclerView(view: View, movie: Movie) {
+    private fun initUi(view: View, movie: MovieDetails) {
+        initMovieDetails(view, movie)
+        initActorsRecyclerView(view, movie)
+    }
+
+    private fun initActorsRecyclerView(view: View, movie: MovieDetails) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_actors_list)
         val adapter = ActorsListAdapter()
         adapter.submitList(movie.actors)
         recyclerView.adapter = adapter
     }
 
-    private fun initMovieDetails(view: View, movie: Movie) {
+    private fun initMovieDetails(view: View, movie: MovieDetails) {
         Glide.with(view.context).load(movie.detailImageUrl)
             .into(view.findViewById(R.id.movie_logo_image))
 
@@ -89,6 +113,15 @@ class FragmentMovieDetails : Fragment() {
         }
     }
 
+    private fun showMovieLoadError() {
+
+        Toast.makeText(
+            requireContext(),
+            "Couldn't load movie details! Please check internet connection and try again",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
     override fun onDetach() {
         listener = null
         super.onDetach()
@@ -99,11 +132,11 @@ class FragmentMovieDetails : Fragment() {
     }
 
     companion object {
-        private const val PARAM_MOVIE_DATA = "movie_data"
+        private const val PARAM_MOVIE_ID = "movie_id"
 
-        fun create(movieData: Movie) = FragmentMovieDetails().also {
+        fun create(movieId: Int) = FragmentMovieDetails().also {
             val args = bundleOf(
-                PARAM_MOVIE_DATA to movieData
+                PARAM_MOVIE_ID to movieId
             )
             it.arguments = args
         }

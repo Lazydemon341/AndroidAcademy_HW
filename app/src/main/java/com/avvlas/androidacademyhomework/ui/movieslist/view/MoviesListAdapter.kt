@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.avvlas.androidacademyhomework.R
 import com.avvlas.androidacademyhomework.model.Movie
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 
 class MoviesListAdapter(private val onCardClickListener: (Item: Movie) -> Unit) :
     ListAdapter<Movie, MoviesListAdapter.MovieViewHolder>(DiffCallback()) {
@@ -49,14 +48,15 @@ class MoviesListAdapter(private val onCardClickListener: (Item: Movie) -> Unit) 
         fun bind(movie: Movie, onCardClick: (Item: Movie) -> Unit) {
             Glide.with(itemView.context)
                 .load(movie.imageUrl)
-                .apply(RequestOptions().error(R.drawable.mask).placeholder(R.drawable.mask))
+                .error(R.drawable.mask)
+                .placeholder(R.drawable.mask)
+                .centerCrop()
                 .into(movieImage)
 
             pgText.text = (movie.pgAge.toString() + "+")
             genreText.text = movie.genres.joinToString { it.name }
             reviewsText.text = (movie.reviewCount.toString() + "reviews")
             titleText.text = movie.title
-            durationText.text = (movie.duration.toString() + "min")
 
             // set like tint
             val likeColor = if (movie.isLiked) {

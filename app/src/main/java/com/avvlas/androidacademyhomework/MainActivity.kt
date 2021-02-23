@@ -45,12 +45,12 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSelected(movie: Movie) {
-        toMovieDetails(movie)
+        toMovieDetails(movie.id)
     }
 
-    private fun toMovieDetails(movie: Movie) {
+    private fun toMovieDetails(movieId: Int) {
         supportFragmentManager.beginTransaction()
-            .add(R.id.container_main, FragmentMovieDetails.create(movie))
+            .add(R.id.container_main, FragmentMovieDetails.create(movieId))
             .addToBackStack("Show Movie Details")
             .commit()
     }
