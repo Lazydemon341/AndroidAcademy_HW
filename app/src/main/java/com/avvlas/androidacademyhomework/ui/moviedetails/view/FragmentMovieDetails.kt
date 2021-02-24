@@ -15,13 +15,13 @@ import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.avvlas.androidacademyhomework.R
 import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
 import com.avvlas.androidacademyhomework.model.MovieDetails
 import com.avvlas.androidacademyhomework.ui.moviedetails.viewmodel.MovieDetailsViewModel
 import com.avvlas.androidacademyhomework.ui.moviedetails.viewmodel.MovieDetailsViewModelFactory
 import com.avvlas.androidacademyhomework.ui.viewstate.ViewState
-import com.bumptech.glide.Glide
 
 class FragmentMovieDetails : Fragment() {
 
@@ -81,9 +81,10 @@ class FragmentMovieDetails : Fragment() {
     }
 
     private fun initMovieDetails(view: View, movie: MovieDetails) {
-        // TODO: add placeholder
-        Glide.with(view.context).load(movie.detailImageUrl)
-            .into(view.findViewById(R.id.movie_logo_image))
+        view.findViewById<ImageView>(R.id.movie_logo_image)
+            .load(movie.detailImageUrl) {
+                crossfade(true)
+            }
 
         view.findViewById<TextView>(R.id.movie_details_pg_text)?.text =
             context?.getString(R.string.movies_list_allowed_age_template, movie.pgAge)

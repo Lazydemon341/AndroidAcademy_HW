@@ -11,9 +11,9 @@ import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.avvlas.androidacademyhomework.R
 import com.avvlas.androidacademyhomework.model.Movie
-import com.bumptech.glide.Glide
 
 class MoviesListAdapter(private val onCardClickListener: (Item: Movie) -> Unit) :
     ListAdapter<Movie, MoviesListAdapter.MovieViewHolder>(DiffCallback()) {
@@ -46,13 +46,9 @@ class MoviesListAdapter(private val onCardClickListener: (Item: Movie) -> Unit) 
         private val durationText: TextView = itemView.findViewById(R.id.movie_card_duration)
 
         fun bind(movie: Movie, onCardClick: (Item: Movie) -> Unit) {
-            // TODO: change size
-            Glide.with(itemView.context)
-                .load(movie.imageUrl)
-                .error(R.drawable.mask)
-                .placeholder(R.drawable.mask)
-                .centerCrop()
-                .into(movieImage)
+            movieImage.load(movie.imageUrl){
+                crossfade(true)
+            }
 
             pgText.text = (movie.pgAge.toString() + "+")
             genreText.text = movie.genres.joinToString { it.name }

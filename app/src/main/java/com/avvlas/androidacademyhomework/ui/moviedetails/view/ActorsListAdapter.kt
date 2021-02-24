@@ -8,9 +8,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.avvlas.androidacademyhomework.R
 import com.avvlas.androidacademyhomework.model.Actor
-import com.bumptech.glide.Glide
 
 class ActorsListAdapter : ListAdapter<Actor, ActorsListAdapter.ActorViewHolder>(DiffCallback()) {
 
@@ -30,8 +30,11 @@ class ActorsListAdapter : ListAdapter<Actor, ActorsListAdapter.ActorViewHolder>(
 
         fun bind(actor: Actor) {
             name.text = actor.name
-            // TODO: add placeholder
-            Glide.with(itemView.context).load(actor.imageUrl).into(image)
+
+            image.load(actor.imageUrl){
+                crossfade(true)
+                error(R.drawable.person_image_placeholder)
+            }
         }
     }
 
