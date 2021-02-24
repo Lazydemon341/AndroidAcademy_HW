@@ -6,21 +6,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.academy.fundamentals.homework.data.MovieRepository
 import com.avvlas.androidacademyhomework.model.Movie
+import com.avvlas.androidacademyhomework.ui.viewstate.ViewState
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class MoviesListViewModel(private val repository : MovieRepository) : ViewModel() {
+class MoviesListViewModel(private val repository: MovieRepository) : ViewModel() {
 
-    private val mutableMoviesData = MutableLiveData<List<Movie>>()
-    val moviesData : LiveData<List<Movie>> = mutableMoviesData
+    private val mutableState = MutableLiveData<ViewState<List<Movie>>>()
+    val state: LiveData<ViewState<List<Movie>>> = mutableState
 
-    init{
+    init {
         loadMovies()
     }
 
-    private fun loadMovies(){
-        viewModelScope.launch{
-            mutableMoviesData.postValue(repository.loadMovies())
+    private fun loadMovies() {
+        viewModelScope.launch {
+            repository.loadMovies().collect { mutableState.postValue(it) }
         }
     }
-
 }
+

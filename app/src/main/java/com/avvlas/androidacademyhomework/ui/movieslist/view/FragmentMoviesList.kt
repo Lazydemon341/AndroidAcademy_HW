@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,6 +15,7 @@ import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
 import com.avvlas.androidacademyhomework.model.Movie
 import com.avvlas.androidacademyhomework.ui.movieslist.viewmodel.MoviesListViewModel
 import com.avvlas.androidacademyhomework.ui.movieslist.viewmodel.MoviesListViewModelFactory
+import com.avvlas.androidacademyhomework.ui.viewstate.ViewState
 
 class FragmentMoviesList : Fragment() {
 
@@ -52,14 +54,26 @@ class FragmentMoviesList : Fragment() {
                 listener?.onSelected(movie)
             }
             this.adapter = adapter
-            loadDataToAdapter(adapter)
+            loadData(adapter)
         }
     }
 
-    private fun loadDataToAdapter(adapter: MoviesListAdapter) {
-        viewModel.moviesData.observe(this.viewLifecycleOwner) { movies ->
-            adapter.submitList(movies)
+    private fun loadData(adapter: MoviesListAdapter) {
+        viewModel.state.observe(this.viewLifecycleOwner) { state ->
+            when(state){
+                ViewState.Error -> showMoviesLoadError()
+                //ViewState.Loading -> TODO() show loading
+                is ViewState.Success -> adapter.submitList(state.data)
+            }
         }
+    }
+
+    private fun showMoviesLoadError() {
+        Toast.makeText(
+            requireContext(),
+            "Couldn't load movies! Please check internet connection and try again",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun onDetach() {

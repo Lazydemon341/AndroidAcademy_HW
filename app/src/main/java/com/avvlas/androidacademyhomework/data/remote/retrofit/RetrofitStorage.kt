@@ -31,7 +31,7 @@ class RetrofitStorage(private val api: MoviesApiService) : RemoteDataSource {
                     .map { genreResponse -> Genre(genreResponse.id, genreResponse.name) },
                 reviewCount = it.vote_count,
                 isLiked = false,
-                rating = it.vote_average.roundToInt() / 2,
+                rating = (it.vote_average / 2).roundToInt(),
                 imageUrl = formImageUrl(baseImageUrl, posterSize, it.poster_path)
             )
         }
@@ -56,7 +56,7 @@ class RetrofitStorage(private val api: MoviesApiService) : RemoteDataSource {
                 duration = it.runtime,
                 reviewCount = it.vote_count,
                 isLiked = false,
-                rating = it.vote_average.roundToInt() / 2,
+                rating = (it.vote_average / 2).roundToInt(),
                 detailImageUrl = formImageUrl(baseImageUrl, backdropSize, it.backdrop_path),
                 storyLine = it.overview,
                 actors = api.loadMovieCredits(id).cast.map { castResponse ->
@@ -77,12 +77,12 @@ class RetrofitStorage(private val api: MoviesApiService) : RemoteDataSource {
     private fun formImageUrl(baseUrl: String, size: String?, path: String): String {
         return baseUrl
             .plus(
-                size.takeUnless { it.isNullOrEmpty() } ?: DEFAULT_IMAGE_SIZE
+                size.takeUnless { it.isNullOrEmpty() } ?: ORIGINAL_IMAGE_SIZE
             )
             .plus(path)
     }
 
     companion object {
-        private const val DEFAULT_IMAGE_SIZE = "original"
+        private const val ORIGINAL_IMAGE_SIZE = "original"
     }
 }

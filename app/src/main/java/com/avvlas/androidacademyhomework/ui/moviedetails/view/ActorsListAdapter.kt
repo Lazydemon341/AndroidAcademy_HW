@@ -30,6 +30,7 @@ class ActorsListAdapter : ListAdapter<Actor, ActorsListAdapter.ActorViewHolder>(
 
         fun bind(actor: Actor) {
             name.text = actor.name
+            // TODO: add placeholder
             Glide.with(itemView.context).load(actor.imageUrl).into(image)
         }
     }

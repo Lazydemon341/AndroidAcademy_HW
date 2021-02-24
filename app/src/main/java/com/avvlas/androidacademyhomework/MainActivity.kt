@@ -8,7 +8,7 @@ import com.avvlas.androidacademyhomework.data.remote.retrofit.RetrofitStorage
 import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
 import com.avvlas.androidacademyhomework.di.NetworkModule
 import com.avvlas.androidacademyhomework.model.Movie
-import com.avvlas.androidacademyhomework.repository.MovieRepositoryImpl
+import com.avvlas.androidacademyhomework.repository.MoviesRepositoryImpl
 import com.avvlas.androidacademyhomework.ui.moviedetails.view.FragmentMovieDetails
 import com.avvlas.androidacademyhomework.ui.movieslist.view.FragmentMoviesList
 
@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(),
 
     private val networkModule = NetworkModule()
     private val remoteDataSource = RetrofitStorage(networkModule.api)
-    private val repository = MovieRepositoryImpl.getInstance(remoteDataSource)
+    private val repository = MoviesRepositoryImpl.getInstance(remoteDataSource)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

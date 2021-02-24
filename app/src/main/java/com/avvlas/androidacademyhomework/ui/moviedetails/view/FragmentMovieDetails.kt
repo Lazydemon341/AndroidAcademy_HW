@@ -20,7 +20,7 @@ import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
 import com.avvlas.androidacademyhomework.model.MovieDetails
 import com.avvlas.androidacademyhomework.ui.moviedetails.viewmodel.MovieDetailsViewModel
 import com.avvlas.androidacademyhomework.ui.moviedetails.viewmodel.MovieDetailsViewModelFactory
-import com.avvlas.androidacademyhomework.ui.moviedetails.viewmodel.MovieDetailsViewState
+import com.avvlas.androidacademyhomework.ui.viewstate.ViewState
 import com.bumptech.glide.Glide
 
 class FragmentMovieDetails : Fragment() {
@@ -61,8 +61,9 @@ class FragmentMovieDetails : Fragment() {
         viewModel.loadMovieDetails(movieId)
         viewModel.state.observe(this.viewLifecycleOwner) { state ->
             when (state) {
-                is MovieDetailsViewState.MovieLoaded -> initUi(view, state.movie)
-                MovieDetailsViewState.NoMovie -> showMovieLoadError()
+                is ViewState.Success<MovieDetails> -> initUi(view, state.data)
+                ViewState.Error -> showMovieLoadError()
+                //ViewState.Loading -> TODO()
             }
         }
     }
@@ -80,6 +81,7 @@ class FragmentMovieDetails : Fragment() {
     }
 
     private fun initMovieDetails(view: View, movie: MovieDetails) {
+        // TODO: add placeholder
         Glide.with(view.context).load(movie.detailImageUrl)
             .into(view.findViewById(R.id.movie_logo_image))
 

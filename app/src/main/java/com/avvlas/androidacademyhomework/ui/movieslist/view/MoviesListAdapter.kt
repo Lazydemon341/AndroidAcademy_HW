@@ -46,6 +46,7 @@ class MoviesListAdapter(private val onCardClickListener: (Item: Movie) -> Unit) 
         private val durationText: TextView = itemView.findViewById(R.id.movie_card_duration)
 
         fun bind(movie: Movie, onCardClick: (Item: Movie) -> Unit) {
+            // TODO: change size
             Glide.with(itemView.context)
                 .load(movie.imageUrl)
                 .error(R.drawable.mask)
