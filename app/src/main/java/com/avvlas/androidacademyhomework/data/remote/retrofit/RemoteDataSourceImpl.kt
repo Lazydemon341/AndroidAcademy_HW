@@ -8,7 +8,7 @@ import com.avvlas.androidacademyhomework.model.Movie
 import com.avvlas.androidacademyhomework.model.MovieDetails
 import kotlin.math.roundToInt
 
-class RetrofitStorage(private val api: MoviesApiService) : RemoteDataSource {
+class RemoteDataSourceImpl(private val api: MoviesApiService) : RemoteDataSource {
 
     override suspend fun loadMovies(): List<Movie> {
         val images = api.loadConfiguration().images
@@ -21,6 +21,12 @@ class RetrofitStorage(private val api: MoviesApiService) : RemoteDataSource {
         val genres = api.loadGenres().genres
 
         val movies = api.loadPopularMovies().results
+        movies.forEach { movie ->
+            Log.d(
+                "votes",
+                movie.vote_average.toString().plus(" " + (movie.vote_average / 2).roundToInt())
+            )
+        }
         return movies.map {
             Movie(
                 id = it.id,

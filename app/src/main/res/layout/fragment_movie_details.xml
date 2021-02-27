@@ -13,6 +13,19 @@
         android:paddingBottom="@dimen/spacing_2x"
         tools:context=".MainActivity">
 
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_bar_movie_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/red"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/movie_logo_image"
             android:layout_width="0dp"
@@ -26,6 +39,7 @@
             tools:src="@drawable/img_movies_item_header_avengers" />
 
         <View
+            android:id="@+id/view"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@drawable/mask"
@@ -166,7 +180,7 @@
             android:layout_marginStart="4dp"
             android:textAllCaps="true"
             android:textColor="@color/gray_dark"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@id/right_guideline"
             app:layout_constraintHorizontal_bias="0.5"
@@ -211,6 +225,7 @@
 
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

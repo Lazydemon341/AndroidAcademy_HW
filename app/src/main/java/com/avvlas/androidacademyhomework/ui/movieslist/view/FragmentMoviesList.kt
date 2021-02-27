@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,8 +17,11 @@ import com.avvlas.androidacademyhomework.model.Movie
 import com.avvlas.androidacademyhomework.ui.movieslist.viewmodel.MoviesListViewModel
 import com.avvlas.androidacademyhomework.ui.movieslist.viewmodel.MoviesListViewModelFactory
 import com.avvlas.androidacademyhomework.ui.viewstate.ViewState
+import com.google.android.material.progressindicator.CircularProgressIndicator
 
 class FragmentMoviesList : Fragment() {
+
+    var progressIndicator: CircularProgressIndicator? = null
 
     private val viewModel: MoviesListViewModel by viewModels {
         MoviesListViewModelFactory(
@@ -47,6 +51,8 @@ class FragmentMoviesList : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        progressIndicator = view.findViewById(R.id.progress_bar_movies_list)
+
         view.findViewById<RecyclerView>(R.id.rv_movies_list).apply {
             this.layoutManager = GridLayoutManager(this.context, 2)
 
@@ -61,19 +67,34 @@ class FragmentMoviesList : Fragment() {
     private fun loadData(adapter: MoviesListAdapter) {
         viewModel.state.observe(this.viewLifecycleOwner) { state ->
             when(state){
-                ViewState.Error -> showMoviesLoadError()
-                //ViewState.Loading -> TODO() show loading
-                is ViewState.Success -> adapter.submitList(state.data)
+                ViewState.Error -> moviesLoadError()
+                ViewState.Loading -> showProgressIndicator() // TODO: why is it not visible??
+                is ViewState.Success -> moviesLoadSuccess(adapter, state.data)
             }
         }
     }
 
-    private fun showMoviesLoadError() {
+    private fun showProgressIndicator() {
+        progressIndicator?.isVisible = true
+    }
+
+    private fun hideProgressIndicator() {
+        progressIndicator?.isVisible = false
+
+    }
+
+    private fun moviesLoadError() {
+        hideProgressIndicator()
         Toast.makeText(
             requireContext(),
             "Couldn't load movies! Please check internet connection and try again",
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    private fun moviesLoadSuccess(adapter: MoviesListAdapter, movies : List<Movie>){
+        hideProgressIndicator()
+        adapter.submitList(movies)
     }
 
     override fun onDetach() {

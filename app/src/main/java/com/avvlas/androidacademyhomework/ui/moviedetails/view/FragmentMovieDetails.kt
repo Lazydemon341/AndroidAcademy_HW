@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,8 +23,12 @@ import com.avvlas.androidacademyhomework.model.MovieDetails
 import com.avvlas.androidacademyhomework.ui.moviedetails.viewmodel.MovieDetailsViewModel
 import com.avvlas.androidacademyhomework.ui.moviedetails.viewmodel.MovieDetailsViewModelFactory
 import com.avvlas.androidacademyhomework.ui.viewstate.ViewState
+import com.google.android.material.progressindicator.CircularProgressIndicator
 
 class FragmentMovieDetails : Fragment() {
+
+    var progressIndicator: CircularProgressIndicator? = null
+
 
     private val viewModel: MovieDetailsViewModel by viewModels {
         MovieDetailsViewModelFactory(
@@ -52,6 +57,8 @@ class FragmentMovieDetails : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        progressIndicator = view.findViewById(R.id.progress_bar_movie_details)
+
         view.findViewById<TextView>(R.id.movie_details_back_text)
             .setOnClickListener {
                 listener?.onBackClick()
@@ -63,17 +70,28 @@ class FragmentMovieDetails : Fragment() {
             when (state) {
                 is ViewState.Success<MovieDetails> -> initUi(view, state.data)
                 ViewState.Error -> showMovieLoadError()
-                //ViewState.Loading -> TODO()
+                ViewState.Loading -> showProgressIndicator() // TODO: why is it not fully visible??
             }
         }
     }
 
+    private fun showProgressIndicator() {
+        progressIndicator?.isVisible = true
+    }
+
+    private fun hideProgressIndicator() {
+        progressIndicator?.isVisible = false
+
+    }
+
     private fun initUi(view: View, movie: MovieDetails) {
+        hideProgressIndicator()
         initMovieDetails(view, movie)
         initActorsRecyclerView(view, movie)
     }
 
     private fun initActorsRecyclerView(view: View, movie: MovieDetails) {
+        hideProgressIndicator()
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_actors_list)
         val adapter = ActorsListAdapter()
         adapter.submitList(movie.actors)

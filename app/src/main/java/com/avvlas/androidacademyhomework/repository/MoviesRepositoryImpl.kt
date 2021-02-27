@@ -1,5 +1,6 @@
 package com.avvlas.androidacademyhomework.repository
 
+import android.util.Log
 import com.android.academy.fundamentals.homework.data.MovieRepository
 import com.avvlas.androidacademyhomework.data.remote.RemoteDataSource
 import com.avvlas.androidacademyhomework.model.Movie
@@ -28,11 +29,14 @@ class MoviesRepositoryImpl private constructor(
         apiCall: suspend () -> T
     ): Flow<ViewState<T>> =
         flow {
+            emit(ViewState.Loading)
+            Log.d("view_state", "loading    ")
             try {
-                emit(ViewState.Loading)
                 emit(ViewState.Success(apiCall.invoke()))
+                Log.d("view_state", "success")
             } catch (throwable: Throwable) {
                 emit(ViewState.Error)
+                Log.d("view_state", "error")
             }
         }.flowOn(dispatcher)
 
