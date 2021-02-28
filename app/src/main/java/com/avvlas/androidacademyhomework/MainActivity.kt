@@ -3,11 +3,13 @@ package com.avvlas.androidacademyhomework
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.android.academy.fundamentals.homework.data.MovieRepository
+import com.avvlas.androidacademyhomework.data.local.MoviesDatabase
+import com.avvlas.androidacademyhomework.data.remote.RemoteDataSource
 import com.avvlas.androidacademyhomework.data.remote.retrofit.RemoteDataSourceImpl
 import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
 import com.avvlas.androidacademyhomework.di.NetworkModule
 import com.avvlas.androidacademyhomework.model.Movie
+import com.avvlas.androidacademyhomework.repository.MoviesRepository
 import com.avvlas.androidacademyhomework.repository.MoviesRepositoryImpl
 import com.avvlas.androidacademyhomework.ui.moviedetails.view.FragmentMovieDetails
 import com.avvlas.androidacademyhomework.ui.movieslist.view.FragmentMoviesList
@@ -17,9 +19,10 @@ class MainActivity : AppCompatActivity(),
     FragmentMoviesList.OnMovieSelectedListener,
     MovieRepositoryProvider {
 
-    private val networkModule = NetworkModule()
-    private val remoteDataSource = RemoteDataSourceImpl(networkModule.api)
-    private val repository = MoviesRepositoryImpl.getInstance(remoteDataSource)
+    private val networkModule : NetworkModule by lazy{NetworkModule()}
+    private val database: MoviesDatabase by lazy { MoviesDatabase.getInstance(applicationContext) }
+    private val remoteDataSource : RemoteDataSource by lazy{RemoteDataSourceImpl(networkModule.api)}
+    private val repository :MoviesRepository by lazy{ MoviesRepositoryImpl.getInstance(database, remoteDataSource)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,12 +47,12 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSelected(movie: Movie) {
-        toMovieDetails(movie.id)
+        toMovieDetails(movie)
     }
 
-    private fun toMovieDetails(movieId: Int) {
+    private fun toMovieDetails(movie: Movie) {
         supportFragmentManager.beginTransaction()
-            .add(R.id.container_main, FragmentMovieDetails.create(movieId))
+            .add(R.id.container_main, FragmentMovieDetails.create(movie.movieId))
             .addToBackStack("Show Movie Details")
             .commit()
     }
@@ -58,7 +61,7 @@ class MainActivity : AppCompatActivity(),
         supportFragmentManager.popBackStack()
     }
 
-    override fun provideMovieRepository(): MovieRepository {
+    override fun provideMovieRepository(): MoviesRepository {
         return repository
     }
 }

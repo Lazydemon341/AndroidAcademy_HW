@@ -1,6 +1,6 @@
 package com.avvlas.androidacademyhomework.data.remote.retrofit
 
-import com.avvlas.androidacademyhomework.data.remote.retrofit.response.*
+import com.avvlas.androidacademyhomework.data.remote.retrofit.responses.*
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -13,9 +13,6 @@ interface MoviesApiService {
 
     @GET("movie/popular")
     suspend fun loadPopularMovies(): PopularMoviesResponse
-
-    @GET("movie/{id}")
-    suspend fun loadMovieDetails(@Path("id") id: Int): MovieDetailsResponse
 
     @GET("movie/{id}/credits")
     suspend fun loadMovieCredits(@Path("id") id : Int): MovieCreditsResponse

@@ -1,7 +1,7 @@
 package com.avvlas.androidacademyhomework.di
 
-import com.android.academy.fundamentals.homework.data.MovieRepository
+import com.avvlas.androidacademyhomework.repository.MoviesRepository
 
 interface MovieRepositoryProvider {
-    fun provideMovieRepository() : MovieRepository
+    fun provideMovieRepository() : MoviesRepository
 }

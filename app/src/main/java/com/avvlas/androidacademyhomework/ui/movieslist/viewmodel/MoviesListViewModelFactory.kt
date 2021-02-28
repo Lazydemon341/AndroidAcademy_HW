@@ -2,9 +2,9 @@ package com.avvlas.androidacademyhomework.ui.movieslist.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.android.academy.fundamentals.homework.data.MovieRepository
+import com.avvlas.androidacademyhomework.repository.MoviesRepository
 
-class MoviesListViewModelFactory(private val repository : MovieRepository) : ViewModelProvider.Factory {
+class MoviesListViewModelFactory(private val repository : MoviesRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return MoviesListViewModel(repository) as T
     }

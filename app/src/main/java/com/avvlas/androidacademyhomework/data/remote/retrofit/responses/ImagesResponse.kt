@@ -1,7 +1,4 @@
-package com.avvlas.androidacademyhomework.data.remote.retrofit.response
-
-import com.squareup.moshi.Json
-import kotlinx.serialization.Serializable
+package com.avvlas.androidacademyhomework.data.remote.retrofit.responses
 
 data class ImagesResponse(
     val backdrop_sizes: List<String>,

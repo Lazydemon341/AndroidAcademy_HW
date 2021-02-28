@@ -83,11 +83,11 @@ class MoviesListAdapter(private val onCardClickListener: (Item: Movie) -> Unit) 
 
     class DiffCallback : DiffUtil.ItemCallback<Movie>() {
         override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.movieId == newItem.movieId
         }
 
         override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-            return oldItem.equals(newItem)
+            return oldItem == newItem
         }
 
     }

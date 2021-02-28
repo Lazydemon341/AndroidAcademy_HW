@@ -19,7 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.avvlas.androidacademyhomework.R
 import com.avvlas.androidacademyhomework.di.MovieRepositoryProvider
-import com.avvlas.androidacademyhomework.model.MovieDetails
+import com.avvlas.androidacademyhomework.model.Actor
+import com.avvlas.androidacademyhomework.model.Movie
 import com.avvlas.androidacademyhomework.ui.moviedetails.viewmodel.MovieDetailsViewModel
 import com.avvlas.androidacademyhomework.ui.moviedetails.viewmodel.MovieDetailsViewModelFactory
 import com.avvlas.androidacademyhomework.ui.viewstate.ViewState
@@ -64,15 +65,16 @@ class FragmentMovieDetails : Fragment() {
                 listener?.onBackClick()
             }
 
-        val movieId = arguments?.getInt(PARAM_MOVIE_ID) as? Int ?: return
-        viewModel.loadMovieDetails(movieId)
-        viewModel.state.observe(this.viewLifecycleOwner) { state ->
-            when (state) {
-                is ViewState.Success<MovieDetails> -> initUi(view, state.data)
-                ViewState.Error -> showMovieLoadError()
-                ViewState.Loading -> showProgressIndicator() // TODO: why is it not fully visible??
-            }
-        }
+        val movieId = arguments?.getInt(PARAM_MOVIE_ID) ?: return
+//        initMovieDetails(view, movie)
+//        viewModel.loadMovieActors(movie.id)
+//        viewModel.state.observe(this.viewLifecycleOwner) { state ->
+//            when (state) {
+//                is ViewState.Success<List<Actor>> -> initActorsRecyclerView(view, state.data)
+//                ViewState.Error -> showMovieLoadError()
+//                ViewState.Loading -> showProgressIndicator() // TODO: why is it not fully visible??
+//            }
+//        }
     }
 
     private fun showProgressIndicator() {
@@ -84,21 +86,15 @@ class FragmentMovieDetails : Fragment() {
 
     }
 
-    private fun initUi(view: View, movie: MovieDetails) {
-        hideProgressIndicator()
-        initMovieDetails(view, movie)
-        initActorsRecyclerView(view, movie)
-    }
-
-    private fun initActorsRecyclerView(view: View, movie: MovieDetails) {
+    private fun initActorsRecyclerView(view: View, actors: List<Actor>) {
         hideProgressIndicator()
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_actors_list)
         val adapter = ActorsListAdapter()
-        adapter.submitList(movie.actors)
+        adapter.submitList(actors)
         recyclerView.adapter = adapter
     }
 
-    private fun initMovieDetails(view: View, movie: MovieDetails) {
+    private fun initMovieDetails(view: View, movie: Movie) {
         view.findViewById<ImageView>(R.id.movie_logo_image)
             .load(movie.detailImageUrl) {
                 crossfade(true)
@@ -138,7 +134,7 @@ class FragmentMovieDetails : Fragment() {
 
         Toast.makeText(
             requireContext(),
-            "Couldn't load movie details! Please check internet connection and try again",
+            "Couldn't load movie actors! Please check your internet connection and try again",
             Toast.LENGTH_SHORT
         ).show()
     }
@@ -153,7 +149,7 @@ class FragmentMovieDetails : Fragment() {
     }
 
     companion object {
-        private const val PARAM_MOVIE_ID = "movie_id"
+        private const val PARAM_MOVIE_ID = "movieId"
 
         fun create(movieId: Int) = FragmentMovieDetails().also {
             val args = bundleOf(

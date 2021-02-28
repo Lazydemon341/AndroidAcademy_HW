@@ -5,7 +5,6 @@ import com.avvlas.androidacademyhomework.data.remote.RemoteDataSource
 import com.avvlas.androidacademyhomework.model.Actor
 import com.avvlas.androidacademyhomework.model.Genre
 import com.avvlas.androidacademyhomework.model.Movie
-import com.avvlas.androidacademyhomework.model.MovieDetails
 import kotlin.math.roundToInt
 
 class RemoteDataSourceImpl(private val api: MoviesApiService) : RemoteDataSource {
@@ -17,7 +16,7 @@ class RemoteDataSourceImpl(private val api: MoviesApiService) : RemoteDataSource
 
         val posterSize = images.poster_sizes.find { it == "w500" }
         val backdropSize = images.backdrop_sizes.find { it == "w780" }
-        val profileSize = images.profile_sizes.find { it == "w185" }
+
         val genres = api.loadGenres().genres
 
         val movies = api.loadPopularMovies().results
@@ -29,7 +28,7 @@ class RemoteDataSourceImpl(private val api: MoviesApiService) : RemoteDataSource
         }
         return movies.map {
             Movie(
-                id = it.id,
+                movieId = it.id,
                 pgAge = if (it.adult) 16 else 13,
                 title = it.title,
                 genres = genres
@@ -38,44 +37,23 @@ class RemoteDataSourceImpl(private val api: MoviesApiService) : RemoteDataSource
                 reviewCount = it.vote_count,
                 isLiked = false,
                 rating = (it.vote_average / 2).roundToInt(),
-                imageUrl = formImageUrl(baseImageUrl, posterSize, it.poster_path)
+                imageUrl = formImageUrl(baseImageUrl, posterSize, it.poster_path),
+                detailImageUrl = formImageUrl(baseImageUrl, backdropSize, it.backdrop_path),
+                storyLine = it.overview
             )
         }
     }
 
-    override suspend fun loadMovie(id: Int): MovieDetails {
+    override suspend fun loadMovieActors(movieId: Int): List<Actor> {
         val images = api.loadConfiguration().images
         val baseImageUrl = images.secure_base_url
-
-        val posterSize = images.poster_sizes.find { it == "w500" }
-        val backdropSize = images.backdrop_sizes.find { it == "w780" }
         val profileSize = images.profile_sizes.find { it == "w185" }
-        val genres = api.loadGenres().genres
 
-        return api.loadMovieDetails(id).let {
-            MovieDetails(
-                id = it.id,
-                pgAge = if (it.adult) 16 else 13,
-                title = it.title,
-                genres = it.genres
-                    .map { genreResponse -> Genre(genreResponse.id, genreResponse.name) },
-                duration = it.runtime,
-                reviewCount = it.vote_count,
-                isLiked = false,
-                rating = (it.vote_average / 2).roundToInt(),
-                detailImageUrl = formImageUrl(baseImageUrl, backdropSize, it.backdrop_path),
-                storyLine = it.overview,
-                actors = api.loadMovieCredits(id).cast.map { castResponse ->
-                    Actor(
-                        id = castResponse.id,
-                        name = castResponse.name,
-                        imageUrl = formImageUrl(
-                            baseImageUrl,
-                            profileSize,
-                            castResponse.profile_path
-                        )
-                    )
-                }
+        return api.loadMovieCredits(movieId).cast.map {
+            Actor(
+                actorId = it.id,
+                name = it.name,
+                imageUrl =  formImageUrl(baseImageUrl, profileSize, it.profile_path)
             )
         }
     }

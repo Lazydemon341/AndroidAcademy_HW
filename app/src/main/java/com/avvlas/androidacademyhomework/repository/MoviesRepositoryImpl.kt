@@ -1,10 +1,10 @@
 package com.avvlas.androidacademyhomework.repository
 
 import android.util.Log
-import com.android.academy.fundamentals.homework.data.MovieRepository
+import com.avvlas.androidacademyhomework.data.local.MoviesDatabase
 import com.avvlas.androidacademyhomework.data.remote.RemoteDataSource
+import com.avvlas.androidacademyhomework.model.Actor
 import com.avvlas.androidacademyhomework.model.Movie
-import com.avvlas.androidacademyhomework.model.MovieDetails
 import com.avvlas.androidacademyhomework.ui.viewstate.ViewState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -13,16 +13,33 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class MoviesRepositoryImpl private constructor(
+    private val database: MoviesDatabase,
     private val remoteDataSource: RemoteDataSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : MovieRepository {
+) : MoviesRepository {
 
-    override suspend fun loadMovies(): Flow<ViewState<List<Movie>>> {
-        return safeApiCall { remoteDataSource.loadMovies() }
-    }
+    override suspend fun loadMovies(): Flow<ViewState<List<Movie>>> = flow {
+        emit(ViewState.Loading)
 
-    override suspend fun loadMovie(movieId: Int): Flow<ViewState<MovieDetails>> {
-        return safeApiCall { remoteDataSource.loadMovie(movieId) }
+        val cachedMovies = database.moviesDao().getMovies()
+        // TODO: wtf?
+        if (cachedMovies != null) {
+            emit(ViewState.Success(cachedMovies))
+        }
+        // TODO: something better
+        //emit(ViewState.Loading)
+
+        try {
+            val freshMovies = remoteDataSource.loadMovies()
+            emit(ViewState.Success(freshMovies))
+            database.moviesDao().clearAndCacheMovies(freshMovies)
+        } catch (throwable: Throwable) {
+            emit(ViewState.Error)
+        }
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun loadActors(movieId: Int): Flow<ViewState<List<Actor>>> {
+        return safeApiCall { remoteDataSource.loadMovieActors(movieId) }
     }
 
     private suspend fun <T> safeApiCall(
@@ -41,13 +58,16 @@ class MoviesRepositoryImpl private constructor(
         }.flowOn(dispatcher)
 
     companion object {
-        private var instance: MovieRepository? = null
+        private var instance: MoviesRepository? = null
 
-        fun getInstance(remoteDataSource: RemoteDataSource): MovieRepository {
+        fun getInstance(
+            database: MoviesDatabase,
+            remoteDataSource: RemoteDataSource
+        ): MoviesRepository {
             if (instance == null) {
                 synchronized(this) {
                     if (instance == null) {
-                        instance = MoviesRepositoryImpl(remoteDataSource)
+                        instance = MoviesRepositoryImpl(database, remoteDataSource)
                     }
                 }
             }
