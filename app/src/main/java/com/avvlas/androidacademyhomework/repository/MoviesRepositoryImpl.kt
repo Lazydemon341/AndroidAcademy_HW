@@ -21,24 +21,23 @@ class MoviesRepositoryImpl private constructor(
     override suspend fun loadMovies(): Flow<ViewState<List<Movie>>> = flow {
         emit(ViewState.Loading)
 
-        val cachedMovies = database.moviesDao().getMovies()
-        // TODO: wtf?
-        if (cachedMovies != null) {
-            emit(ViewState.Success(cachedMovies))
-        }
-        // TODO: something better
-        //emit(ViewState.Loading)
-
+        var freshMovies : List<Movie>? = null
         try {
-            val freshMovies = remoteDataSource.loadMovies()
-            emit(ViewState.Success(freshMovies))
+            freshMovies = remoteDataSource.loadMovies()
             database.moviesDao().clearAndCacheMovies(freshMovies)
+            //TODO: why does throwing an error work so long?
         } catch (throwable: Throwable) {
             emit(ViewState.Error)
+        }
+
+        val cachedMovies = database.moviesDao().getMovies()
+        if (cachedMovies != null) {
+            emit(ViewState.Success(cachedMovies))
         }
     }.flowOn(Dispatchers.IO)
 
     override suspend fun loadActors(movieId: Int): Flow<ViewState<List<Actor>>> {
+        // TODO
         return safeApiCall { remoteDataSource.loadMovieActors(movieId) }
     }
 
