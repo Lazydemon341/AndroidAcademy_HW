@@ -68,7 +68,7 @@ class FragmentMoviesList : Fragment() {
         viewModel.state.observe(this.viewLifecycleOwner) { state ->
             when(state){
                 ViewState.Error -> moviesLoadError()
-                ViewState.Loading -> showProgressIndicator() // TODO: why is it not visible??
+                ViewState.Loading -> showProgressIndicator()
                 is ViewState.Success -> moviesLoadSuccess(adapter, state.data)
             }
         }

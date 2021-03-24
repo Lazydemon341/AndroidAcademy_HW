@@ -1,12 +1,15 @@
 package com.avvlas.androidacademyhomework.model
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.avvlas.androidacademyhomework.data.local.typeconverters.GenreTypeConverters
+import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "movies")
 @TypeConverters(GenreTypeConverters::class)
+@Parcelize
 data class Movie(
     @PrimaryKey val movieId: Int,
     val pgAge: Int,
@@ -19,7 +22,7 @@ data class Movie(
     val imageUrl: String,
     val detailImageUrl: String,
     val storyLine: String
-) {
+) : Parcelable{
 //    public constructor(
 //        movieId: Int,
 //        pgAge: Int,

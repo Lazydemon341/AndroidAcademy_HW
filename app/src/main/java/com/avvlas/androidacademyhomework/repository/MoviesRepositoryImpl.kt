@@ -25,7 +25,6 @@ class MoviesRepositoryImpl private constructor(
         try {
             freshMovies = remoteDataSource.loadMovies()
             database.moviesDao().clearAndCacheMovies(freshMovies)
-            //TODO: why does throwing an error work so long?
         } catch (throwable: Throwable) {
             emit(ViewState.Error)
         }
@@ -37,7 +36,7 @@ class MoviesRepositoryImpl private constructor(
     }.flowOn(Dispatchers.IO)
 
     override suspend fun loadActors(movieId: Int): Flow<ViewState<List<Actor>>> {
-        // TODO
+        // TODO ?
         return safeApiCall { remoteDataSource.loadMovieActors(movieId) }
     }
 

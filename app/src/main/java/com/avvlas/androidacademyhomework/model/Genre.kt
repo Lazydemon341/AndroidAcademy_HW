@@ -6,8 +6,9 @@ import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "genres")
+@Parcelize
 data class Genre(
     @PrimaryKey
     val genreId: Int,
     val name: String
-)
+) : Parcelable

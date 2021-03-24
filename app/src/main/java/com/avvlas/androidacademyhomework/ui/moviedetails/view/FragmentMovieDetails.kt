@@ -65,16 +65,16 @@ class FragmentMovieDetails : Fragment() {
                 listener?.onBackClick()
             }
 
-        val movieId = arguments?.getInt(PARAM_MOVIE_ID) ?: return
-//        initMovieDetails(view, movie)
-//        viewModel.loadMovieActors(movie.id)
-//        viewModel.state.observe(this.viewLifecycleOwner) { state ->
-//            when (state) {
-//                is ViewState.Success<List<Actor>> -> initActorsRecyclerView(view, state.data)
-//                ViewState.Error -> showMovieLoadError()
-//                ViewState.Loading -> showProgressIndicator() // TODO: why is it not fully visible??
-//            }
-//        }
+        val movie = arguments?.getParcelable<Movie>(PARAM_MOVIE) ?: return
+        initMovieDetails(view, movie)
+        viewModel.loadMovieActors(movie.movieId)
+        viewModel.state.observe(this.viewLifecycleOwner) { state ->
+            when (state) {
+                is ViewState.Success<List<Actor>> -> initActorsRecyclerView(view, state.data)
+                ViewState.Error -> showMovieLoadError()
+                ViewState.Loading -> showProgressIndicator()
+            }
+        }
     }
 
     private fun showProgressIndicator() {
@@ -149,11 +149,11 @@ class FragmentMovieDetails : Fragment() {
     }
 
     companion object {
-        private const val PARAM_MOVIE_ID = "movieId"
+        private const val PARAM_MOVIE = "movie"
 
-        fun create(movieId: Int) = FragmentMovieDetails().also {
+        fun create(movie: Movie) = FragmentMovieDetails().also {
             val args = bundleOf(
-                PARAM_MOVIE_ID to movieId
+                PARAM_MOVIE to movie
             )
             it.arguments = args
         }

@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun toMovieDetails(movie: Movie) {
         supportFragmentManager.beginTransaction()
-            .add(R.id.container_main, FragmentMovieDetails.create(movie.movieId))
+            .add(R.id.container_main, FragmentMovieDetails.create(movie))
             .addToBackStack("Show Movie Details")
             .commit()
     }
